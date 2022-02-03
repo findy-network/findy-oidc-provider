@@ -1,0 +1,16 @@
+node_modules
+dist
+bin/
+coverage/
+
+.DS_Store
+.vscode
+
+.secrets
+.build
+.docker
+.temp
+.data
+
+.npmrc
+.envrc
