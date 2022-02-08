@@ -1,11 +1,11 @@
 module.exports = {
   clients: [
-    // {
-    //   client_id: 'oidcCLIENT',
-    //   client_secret: '...',
-    //   grant_types: ['refresh_token', 'authorization_code'],
-    //   redirect_uris: ['http://sso-client.dev/providers/7/open_id', 'http://sso-client.dev/providers/8/open_id'],
-    // }
+    {
+      client_id: 'issuer-tool',
+      client_secret: 'superSecretKeyLol',
+      grant_types: ['authorization_code'],
+      redirect_uris: ['http://localhost:3001/auth/findy'],
+    }
   ],
   interactions: {
     url(ctx, interaction) { // eslint-disable-line no-unused-vars
