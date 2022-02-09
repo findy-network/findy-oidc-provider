@@ -30,6 +30,7 @@ app.use(
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.use("/js", express.static(path.join(__dirname, "js")));
 
 let adapter;
 // TODO: use a proper adapter

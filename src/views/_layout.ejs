@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html >
+<html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Sign-in</title>
     <style>
       @import url(https://fonts.googleapis.com/css?family=Roboto:400,100);
 
       body {
-        font-family: 'Roboto', sans-serif;
+        font-family: "Roboto", sans-serif;
         margin-top: 25px;
         margin-bottom: 25px;
       }
@@ -19,7 +22,7 @@
         padding-top: 0px;
         padding-bottom: 10px;
         width: 274px;
-        background-color: #F7F7F7;
+        background-color: #f7f7f7;
         margin: 0 auto 10px;
         border-radius: 2px;
         box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
@@ -36,14 +39,16 @@
         font-size: 2.3em;
       }
 
-      .login-card [type=submit] {
+      .login-card [type="submit"] {
         width: 100%;
         display: block;
         margin-bottom: 10px;
         position: relative;
       }
 
-      .login-card input[type=text], input[type=email], input[type=password] {
+      .login-card input[type="text"],
+      input[type="email"],
+      input[type="password"] {
         height: 44px;
         font-size: 16px;
         width: 100%;
@@ -60,7 +65,7 @@
       .login {
         text-align: center;
         font-size: 14px;
-        font-family: 'Arial', sans-serif;
+        font-family: "Arial", sans-serif;
         font-weight: 700;
         height: 36px;
         padding: 0 8px;
@@ -69,7 +74,7 @@
       .login-submit {
         border: 0px;
         color: #fff;
-        text-shadow: 0 1px rgba(0,0,0,0.1);
+        text-shadow: 0 1px rgba(0, 0, 0, 0.1);
         background-color: #4d90fe;
       }
 
@@ -80,7 +85,7 @@
         color: #737373;
         border-radius: 5px;
         white-space: nowrap;
-        box-shadow: 1px 1px 0px 1px rgba(0,0,0,0.05);
+        box-shadow: 1px 1px 0px 1px rgba(0, 0, 0, 0.05);
         transition-property: background-color, box-shadow;
         transition-duration: 150ms;
         transition-timing-function: ease-in-out;
@@ -88,7 +93,7 @@
 
         &:focus,
         &:hover {
-          box-shadow: 1px 4px 5px 1px rgba(0,0,0,0.1);
+          box-shadow: 1px 4px 5px 1px rgba(0, 0, 0, 0.1);
         }
 
         &:active {
@@ -117,7 +122,7 @@
         padding: 0 24px;
         font-size: 14px;
         font-weight: bold;
-        font-family: 'Roboto',arial,sans-serif;
+        font-family: "Roboto", arial, sans-serif;
       }
 
       .login-card a {
@@ -144,7 +149,7 @@
         width: 20%;
       }
 
-      .login-card input[type=checkbox] {
+      .login-card input[type="checkbox"] {
         margin-bottom: 10px;
       }
 
@@ -174,7 +179,9 @@
         list-style-type: circle;
       }
 
-      li + ul, ul + li, li + li {
+      li + ul,
+      ul + li,
+      li + li {
         padding-top: 0.3em;
       }
 
@@ -182,6 +189,9 @@
         cursor: pointer;
       }
     </style>
+    <% if (locals.invitationEncoded) { %>
+    <script src="/js/status.js"></script>
+    <% } %>
   </head>
   <body>
     <div class="login-card">
@@ -190,37 +200,36 @@
       <div class="login-help">
         <a href="/interaction/<%= uid %>/abort">[ Cancel ]</a>
         <% if (client.tosUri) { %>
-          <a href="<%= client.tosUri %>">[ Terms of Service ]</a>
-        <% } %>
-        <% if (client.policyUri) { %>
-          <a href="<%= client.policyUri %>">[ Privacy Policy ]</a>
+        <a href="<%= client.tosUri %>">[ Terms of Service ]</a>
+        <% } %> <% if (client.policyUri) { %>
+        <a href="<%= client.policyUri %>">[ Privacy Policy ]</a>
         <% } %>
       </div>
     </div>
     <div class="grant-debug">
       <details>
-        <summary style="text-align: center;">(Click to expand) DEBUG information</summary>
-        <div>
-          <strong>uid</strong>: <%= uid %>
-        </div>
+        <summary style="text-align: center">
+          (Click to expand) DEBUG information
+        </summary>
+        <div><strong>uid</strong>: <%= uid %></div>
 
         <% if (session) { %>
         <div>
-          SESSION <br>
-         ========= <br>
+          SESSION <br />
+          ========= <br />
           <%- session %>
         </div>
         <% } %>
 
         <div>
-          PARAMS <br>
-         ======== <br>
+          PARAMS <br />
+          ======== <br />
           <%- dbg.params %>
         </div>
 
         <div>
-          PROMPT <br>
-         ======== <br>
+          PROMPT <br />
+          ======== <br />
           <%- dbg.prompt %>
         </div>
       </details>

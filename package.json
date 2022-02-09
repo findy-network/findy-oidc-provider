@@ -12,10 +12,12 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@findy-network/findy-common-ts": "^0.1.7",
     "@vendia/serverless-express": "^4.5.3",
     "express": "^4.17.2",
     "helmet": "^5.0.2",
     "lodash": "^4.17.21",
-    "oidc-provider": "^7.10.6"
+    "oidc-provider": "^7.10.6",
+    "qrcode": "^1.5.0"
   }
 }
