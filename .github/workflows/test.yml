@@ -16,5 +16,5 @@ jobs:
         run: |
           cp ${NPM_CONFIG_USERCONFIG} .
           npm run licenses:check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
