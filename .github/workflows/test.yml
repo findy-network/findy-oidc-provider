@@ -8,7 +8,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@findy-network"
       - name: install deps
-        run: npm ci --ignore-scripts
+        run: npm ci
       - name: run check
-        run: npm run licenses:check
+        run: |
+          cp ${NPM_CONFIG_USERCONFIG} .
+          npm run licenses:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
