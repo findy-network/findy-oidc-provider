@@ -58,6 +58,14 @@ module.exports = (app, provider) => {
     next();
   }
 
+  app.get("/interaction/invitation/:id", async (req, res) => {
+    const account = await Account.findAccount(null, req.params.id);
+    if (account && account.profile) {
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(404);
+  });
+
   app.get("/interaction/:uid", setNoCache, async (req, res, next) => {
     try {
       const { uid, prompt, params, session } =
@@ -67,7 +75,9 @@ module.exports = (app, provider) => {
 
       switch (prompt.name) {
         case "login": {
-          const invitation = await (await agent()).createPairwiseInvitation();
+          const invitation = await (
+            await agent(Account)
+          ).createPairwiseInvitation(uid);
           return res.render("login", {
             client,
             uid,
@@ -117,6 +127,7 @@ module.exports = (app, provider) => {
           prompt: { name },
         } = await provider.interactionDetails(req, res);
         assert.equal(name, "login");
+
         const account = await Account.findByLogin(req.body.login);
 
         const result = {

@@ -1,6 +1,6 @@
 const store = new Map();
 const logins = new Map();
-const { nanoid } = require('nanoid');
+const { nanoid } = require("nanoid");
 
 class Account {
   constructor(id, profile) {
@@ -17,7 +17,8 @@ class Account {
    *   loading some claims from external resources etc. based on this detail
    *   or not return them in id tokens but only userinfo and so on.
    */
-  async claims(use, scope) { // eslint-disable-line no-unused-vars
+  async claims(use, scope) {
+    // eslint-disable-line no-unused-vars
     if (this.profile) {
       return {
         sub: this.accountId, // it is essential to always return a sub claim
@@ -33,7 +34,7 @@ class Account {
     return {
       sub: this.accountId, // it is essential to always return a sub claim
 
-      address: {
+      /*address: {
         country: '000',
         formatted: '000',
         locality: '000',
@@ -58,7 +59,7 @@ class Account {
       profile: 'https://johnswebsite.com',
       updated_at: 1454704946,
       website: 'http://example.com',
-      zoneinfo: 'Europe/Berlin',
+      zoneinfo: 'Europe/Berlin',*/
     };
   }
 
@@ -72,13 +73,14 @@ class Account {
 
   static async findByLogin(login) {
     if (!logins.get(login)) {
-      logins.set(login, new Account(login));
+      logins.set(login, this.findAccount(null, login) || new Account(login));
     }
 
     return logins.get(login);
   }
 
-  static async findAccount(ctx, id, token) { // eslint-disable-line no-unused-vars
+  static async findAccount(ctx, id, token) {
+    // eslint-disable-line no-unused-vars
     // token is a reference to the token used for which a given account is being loaded,
     //   it is undefined in scenarios where account claims are returned from authorization endpoint
     // ctx is the koa request context

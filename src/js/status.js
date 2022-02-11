@@ -1,8 +1,8 @@
 const checkStatus = () => {
   setTimeout(() => {
     const xhttp = new XMLHttpRequest();
-    const invitationId = document.getElementsByName("invitationId")[0].value;
-    const url = `/interaction/invitation/${invitationId}`;
+    const loginUid = document.getElementsByName("login")[0].value;
+    const url = `/interaction/invitation/${loginUid}`;
     xhttp.open("GET", url, true);
     xhttp.send();
     xhttp.onreadystatechange = (e) => {
