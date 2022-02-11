@@ -11,7 +11,7 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
           scope: "@findy-network"
       - name: install deps
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: run check
         run: |
           cp ${NPM_CONFIG_USERCONFIG} .
