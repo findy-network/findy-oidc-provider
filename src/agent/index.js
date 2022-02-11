@@ -9,8 +9,8 @@ module.exports = async (Account) => {
   const acatorProps = {
     authUrl: process.env.FINDY_OIDC_AGENCY_AUTH_URL,
     authOrigin: process.env.FINDY_OIDC_AGENCY_AUTH_ORIGIN,
-    userName: "findy-oidc-provider",
-    key: "15308490f1e4026284594dd08d31291bc8ef2aeac730d0daf6ff87bb92d4336c",
+    userName: process.env.FINDY_OIDC_AGENCY_AUTH_USER,
+    key: process.env.FINDY_OIDC_AGENCY_AUTH_KEY,
   };
   console.log("Creating acator with auth URL", acatorProps.authUrl);
   const authenticator = createAcator(acatorProps);
