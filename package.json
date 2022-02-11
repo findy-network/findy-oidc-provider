@@ -10,6 +10,8 @@
     "package:osx": "npm run package:install && npm run package:zip",
     "package:alpine": "npm run package:install && apk add zip && npm run package:zip",
     "package:docker": "docker run -it --rm -v $PWD/.:/app -w /app node:16.13.2-alpine3.15 npm run package:alpine",
+    "licenses:report": "node ./tools/check-licenses.js report ./dist/licenses.txt",
+    "licenses:check": "node ./tools/check-licenses.js",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,5 +25,8 @@
     "lodash": "^4.17.21",
     "oidc-provider": "^7.10.6",
     "qrcode": "^1.5.0"
+  },
+  "devDependencies": {
+    "js-green-licenses": "^3.0.1"
   }
 }
