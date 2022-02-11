@@ -12,10 +12,13 @@ module.exports = async (Account) => {
     userName: "findy-oidc-provider",
     key: "15308490f1e4026284594dd08d31291bc8ef2aeac730d0daf6ff87bb92d4336c",
   };
+  console.log("Creating acator with auth URL", acatorProps.authUrl);
   const authenticator = createAcator(acatorProps);
 
   const agencyUrl = process.env.FINDY_OIDC_AGENCY_URL;
   const agencyPort = 50051;
+
+  console.log(`Connecting to agency at ${agencyUrl}:${agencyPort}`);
   const connection = await openGRPCConnection(
     { serverAddress: agencyUrl, serverPort: agencyPort, certPath: "" },
     authenticator
@@ -25,6 +28,8 @@ module.exports = async (Account) => {
   const protocolClient = await createProtocolClient();
 
   const startListening = async (uid, id) => {
+    console.log(`Starting to listen to ${uid} with invitation id ${id}`);
+
     const credDefId = process.env.FINDY_OIDC_CRED_DEF_ID;
     const attributes = ["name", "birthdate"];
     let proofId = null;

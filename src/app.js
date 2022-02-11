@@ -12,7 +12,10 @@ const Account = require("./support/account");
 const configuration = require("./support/configuration");
 const routes = require("./routes/express");
 
-const { PORT = 3000, ISSUER = `http://localhost:${PORT}` } = process.env;
+const {
+  PORT = 3000,
+  ISSUER = process.env.FINDY_OIDC_OUR_HOST || `http://localhost:${PORT}`,
+} = process.env;
 configuration.findAccount = Account.findAccount;
 
 const app = express();
