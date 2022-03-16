@@ -78,6 +78,7 @@ module.exports = (app, provider) => {
           const invitation = await (
             await agent(Account)
           ).createPairwiseInvitation(uid);
+          params.invitationRaw = invitation.content;
           return res.render("login", {
             client,
             uid,
