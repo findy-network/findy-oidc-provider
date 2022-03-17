@@ -61,6 +61,13 @@ module.exports = async (Account) => {
               state === agencyv1.ProtocolState.State.OK &&
               protocolStatus.getDidExchange().getId() === id
             ) {
+              const content = new agencyv1.Protocol.BasicMessageMsg();
+              content.setContent(
+                "Please prove your credential to continue the signin process."
+              );
+              await protocolClient.sendBasicMessage(id, content);
+
+              // Create and send proof request
               const requestAttributes = new agencyv1.Protocol.Proof();
               attributes.map((item) => {
                 const attr = new agencyv1.Protocol.Proof.Attribute();
@@ -115,6 +122,13 @@ module.exports = async (Account) => {
               state === agencyv1.ProtocolState.State.OK &&
               notification.getProtocolid() === proofId
             ) {
+              const content = new agencyv1.Protocol.BasicMessageMsg();
+              content.setContent(
+                "Thank you! You can now continue the signin process."
+              );
+              await protocolClient.sendBasicMessage(id, content);
+
+              // Create account
               invites[uid].verified = true;
               const receivedAttributes = protocolStatus
                 .getPresentProof()
