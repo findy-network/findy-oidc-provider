@@ -16,3 +16,4 @@ coverage/
 .envrc
 
 lambda.zip
+src/support/clients.js

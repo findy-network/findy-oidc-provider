@@ -6,6 +6,13 @@ module.exports = async (Account) => {
     agencyv1,
   } = require("@findy-network/findy-common-ts");
   const qrcode = require("qrcode");
+
+  // Cred def id for proof requests
+  const credDefId = process.env.FINDY_OIDC_CRED_DEF_ID;
+  // Verified attributes needed for successful login
+  const attributes = ["name", "birthdate"];
+
+  // Create authenticator
   const acatorProps = {
     authUrl: process.env.FINDY_OIDC_AGENCY_AUTH_URL,
     authOrigin: process.env.FINDY_OIDC_AGENCY_AUTH_ORIGIN,
@@ -18,20 +25,22 @@ module.exports = async (Account) => {
   const agencyUrl = process.env.FINDY_OIDC_AGENCY_URL;
   const agencyPort = 50051;
 
+  // Open grpc connection
   console.log(`Connecting to agency at ${agencyUrl}:${agencyPort}`);
   const connection = await openGRPCConnection(
     { serverAddress: agencyUrl, serverPort: agencyPort, certPath: "" },
     authenticator
   );
+
+  // Create clients for API calls
   const { createAgentClient, createProtocolClient } = connection;
   const agentClient = await createAgentClient();
   const protocolClient = await createProtocolClient();
 
+  // Start listening to agent notifications
   const startListening = async (uid, id) => {
     console.log(`Starting to listen to ${uid} with invitation id ${id}`);
 
-    const credDefId = process.env.FINDY_OIDC_CRED_DEF_ID;
-    const attributes = ["name", "birthdate"];
     let proofId = null;
     await agentClient.startListening(
       async (status) => {
@@ -55,38 +64,13 @@ module.exports = async (Account) => {
 
         switch (notification.getProtocolType()) {
           case agencyv1.Protocol.Type.DIDEXCHANGE:
-            if (
-              notification.getTypeid() ===
-                agencyv1.Notification.Type.STATUS_UPDATE &&
-              state === agencyv1.ProtocolState.State.OK &&
-              protocolStatus.getDidExchange().getId() === id
-            ) {
-              const content = new agencyv1.Protocol.BasicMessageMsg();
-              content.setContent(
-                "Please prove your credential to continue the signin process."
-              );
-              await protocolClient.sendBasicMessage(id, content);
-
-              // Create and send proof request
-              const requestAttributes = new agencyv1.Protocol.Proof();
-              attributes.map((item) => {
-                const attr = new agencyv1.Protocol.Proof.Attribute();
-                attr.setName(item);
-                attr.setCredDefid(credDefId);
-                requestAttributes.addAttributes(attr);
-                return attr;
-              });
-
-              const proofRequest = new agencyv1.Protocol.PresentProofMsg();
-              proofRequest.setAttributes(requestAttributes);
-
-              const res = await protocolClient.sendProofRequest(
-                id,
-                proofRequest
-              );
-              proofId = res.getId();
-            }
-
+            // New connection created, send proof
+            proofId = await onConnectionCreated(
+              id,
+              notification,
+              state,
+              protocolStatus
+            );
             break;
           case agencyv1.Protocol.Type.PRESENT_PROOF:
             if (
@@ -94,56 +78,16 @@ module.exports = async (Account) => {
                 agencyv1.Notification.Type.PROTOCOL_PAUSED &&
               notification.getProtocolid() === proofId
             ) {
-              const receivedAttributes = protocolStatus
-                .getPresentProof()
-                .getProof()
-                .getAttributesList();
-              const ok =
-                receivedAttributes.length === attributes.length &&
-                !receivedAttributes.find((item) => item.getValue().length == 0);
-              const protocolID = new agencyv1.ProtocolID();
-              protocolID.setId(notification.getProtocolid());
-              protocolID.setTypeid(notification.getProtocolType());
-              protocolID.setRole(agencyv1.Protocol.Role.RESUMER);
-              const msg = new agencyv1.ProtocolState();
-              msg.setProtocolid(protocolID);
-              msg.setState(
-                ok
-                  ? agencyv1.ProtocolState.State.ACK
-                  : agencyv1.ProtocolState.State.NACK
-              );
-              await protocolClient.resume(msg);
-              if (!ok) {
-                invites[uid].verified = false;
-              }
+              // Verifier checks values
+              await onProofValuesReceived(notification, protocolStatus);
             } else if (
               notification.getTypeid() ===
                 agencyv1.Notification.Type.STATUS_UPDATE &&
               state === agencyv1.ProtocolState.State.OK &&
               notification.getProtocolid() === proofId
             ) {
-              const content = new agencyv1.Protocol.BasicMessageMsg();
-              content.setContent(
-                "Thank you! You can now continue the signin process."
-              );
-              await protocolClient.sendBasicMessage(id, content);
-
-              // Create account
-              invites[uid].verified = true;
-              const receivedAttributes = protocolStatus
-                .getPresentProof()
-                .getProof()
-                .getAttributesList();
-
-              const profile = receivedAttributes.reduce(
-                (result, item) => ({
-                  ...result,
-                  [item.getName()]: item.getValue(),
-                }),
-                { email: "n/a" }
-              );
-              console.log("Creating new account", profile);
-              new Account(uid, profile);
+              // Verification succesfull, continue signin
+              await onProofSuccess(protocolStatus);
             }
             break;
           default:
@@ -158,6 +102,105 @@ module.exports = async (Account) => {
         filterKeepalive: true,
       }
     );
+  };
+
+  const onConnectionCreated = async (
+    id,
+    notification,
+    state,
+    protocolStatus
+  ) => {
+    if (
+      notification.getTypeid() !== agencyv1.Notification.Type.STATUS_UPDATE ||
+      state !== agencyv1.ProtocolState.State.OK ||
+      protocolStatus.getDidExchange().getId() !== id
+    ) {
+      console.log(
+        "Ignoring notification with type",
+        notification.getTypeid(),
+        "state",
+        state,
+        "id",
+        id
+      );
+      return null;
+    }
+    // Send basic message first to describe the proof
+    const content = new agencyv1.Protocol.BasicMessageMsg();
+    content.setContent(
+      "Please prove your credential to continue the signin process."
+    );
+    await protocolClient.sendBasicMessage(id, content);
+
+    // Create and send proof request
+    const requestAttributes = new agencyv1.Protocol.Proof();
+    attributes.map((item) => {
+      const attr = new agencyv1.Protocol.Proof.Attribute();
+      attr.setName(item);
+      attr.setCredDefid(credDefId);
+      requestAttributes.addAttributes(attr);
+      return attr;
+    });
+
+    const proofRequest = new agencyv1.Protocol.PresentProofMsg();
+    proofRequest.setAttributes(requestAttributes);
+
+    const res = await protocolClient.sendProofRequest(id, proofRequest);
+    return res.getId();
+  };
+
+  const onProofValuesReceived = async (notification, protocolStatus) => {
+    // Get proof values
+    const receivedAttributes = protocolStatus
+      .getPresentProof()
+      .getProof()
+      .getAttributesList();
+
+    // Check that all attributes are present and not empty
+    const ok =
+      receivedAttributes.length === attributes.length &&
+      !receivedAttributes.find((item) => item.getValue().length == 0);
+
+    // Send response
+    const protocolID = new agencyv1.ProtocolID();
+    protocolID.setId(notification.getProtocolid());
+    protocolID.setTypeid(notification.getProtocolType());
+    protocolID.setRole(agencyv1.Protocol.Role.RESUMER);
+    const msg = new agencyv1.ProtocolState();
+    msg.setProtocolid(protocolID);
+    msg.setState(
+      ok ? agencyv1.ProtocolState.State.ACK : agencyv1.ProtocolState.State.NACK
+    );
+    await protocolClient.resume(msg);
+
+    // Update invites map
+    if (!ok) {
+      invites[uid].verified = false;
+    }
+  };
+
+  const onProofSuccess = async (protocolStatus) => {
+    // Send basic message to notify the user
+    const content = new agencyv1.Protocol.BasicMessageMsg();
+    content.setContent("Thank you! You can now continue the signin process.");
+    await protocolClient.sendBasicMessage(id, content);
+
+    // Create account
+    invites[uid].verified = true;
+    const receivedAttributes = protocolStatus
+      .getPresentProof()
+      .getProof()
+      .getAttributesList();
+
+    const profile = receivedAttributes.reduce(
+      (result, item) => ({
+        ...result,
+        [item.getName()]: item.getValue(),
+      }),
+      { email: "n/a" }
+    );
+    console.log("Creating new account", profile);
+    new Account(uid, profile);
   };
 
   const createPairwiseInvitation = async (uid) => {
