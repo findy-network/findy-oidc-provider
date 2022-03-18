@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "deploy": "rm lambda.zip || true && npm run package:docker && cd infra && npm install && cdk deploy -y",
+    "check:clients": "./tools/ensure-clients.sh",
+    "deploy": "npm run check:clients && rm lambda.zip || true && npm run package:docker && cd infra && npm install && cdk deploy -y",
     "package:install": "rm -rf node_modules && npm install --legacy-peer-deps --only=production",
     "package:zip": "zip -r lambda.zip node_modules src",
     "package:osx": "npm run package:install && npm run package:zip",
@@ -12,7 +13,7 @@
     "package:docker": "docker run -it --rm -v $PWD/.:/app -w /app node:16.13.2-alpine3.15 npm run package:alpine",
     "licenses:report": "node ./tools/check-licenses.js report ./dist/licenses.txt",
     "licenses:check": "node ./tools/check-licenses.js",
-    "start": "node src/index.js",
+    "start": "npm run check:clients && node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
