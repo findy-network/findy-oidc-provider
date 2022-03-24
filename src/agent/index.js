@@ -79,7 +79,7 @@ module.exports = async (Account) => {
               notification.getProtocolid() === proofId
             ) {
               // Verifier checks values
-              await onProofValuesReceived(notification, protocolStatus);
+              await onProofValuesReceived(uid, notification, protocolStatus);
             } else if (
               notification.getTypeid() ===
                 agencyv1.Notification.Type.STATUS_UPDATE &&
@@ -87,7 +87,7 @@ module.exports = async (Account) => {
               notification.getProtocolid() === proofId
             ) {
               // Verification succesfull, continue signin
-              await onProofSuccess(protocolStatus);
+              await onProofSuccess(uid, id, protocolStatus);
             }
             break;
           default:
@@ -149,7 +149,7 @@ module.exports = async (Account) => {
     return res.getId();
   };
 
-  const onProofValuesReceived = async (notification, protocolStatus) => {
+  const onProofValuesReceived = async (uid, notification, protocolStatus) => {
     // Get proof values
     const receivedAttributes = protocolStatus
       .getPresentProof()
@@ -179,11 +179,11 @@ module.exports = async (Account) => {
     }
   };
 
-  const onProofSuccess = async (protocolStatus) => {
+  const onProofSuccess = async (uid, connectionId, protocolStatus) => {
     // Send basic message to notify the user
     const content = new agencyv1.Protocol.BasicMessageMsg();
     content.setContent("Thank you! You can now continue the signin process.");
-    await protocolClient.sendBasicMessage(id, content);
+    await protocolClient.sendBasicMessage(connectionId, content);
 
     // Create account
     invites[uid].verified = true;
