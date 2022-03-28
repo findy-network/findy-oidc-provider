@@ -19,7 +19,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@findy-network/findy-common-ts": "^0.1.10",
+    "@findy-network/findy-common-ts": "^0.1.11",
     "@vendia/serverless-express": "^4.5.3",
     "express": "^4.17.2",
     "helmet": "^5.0.2",
