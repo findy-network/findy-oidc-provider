@@ -6,7 +6,7 @@
   "scripts": {
     "check:clients": "./tools/ensure-clients.sh",
     "deploy": "npm run check:clients && rm lambda.zip || true && npm run package:docker && cd infra && npm install && cdk deploy -y",
-    "package:install": "rm -rf node_modules && npm install --legacy-peer-deps --only=production",
+    "package:install": "rm -rf node_modules && npm install --only=production",
     "package:zip": "zip -r lambda.zip node_modules src",
     "package:osx": "npm run package:install && npm run package:zip",
     "package:alpine": "npm run package:install && apk add zip && npm run package:zip",
@@ -19,7 +19,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@findy-network/findy-common-ts": "^0.1.7",
+    "@findy-network/findy-common-ts": "^0.1.10",
     "@vendia/serverless-express": "^4.5.3",
     "express": "^4.17.2",
     "helmet": "^5.0.2",
