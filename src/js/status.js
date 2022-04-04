@@ -1,11 +1,13 @@
-const stepMs = 3000;
-const maxMs = 3 * 60 * 1000;
+const stepMs = 1000;
+const maxMs = 60 * 1000;
 
 const checkStatus = (waitTime) => {
   const waitElement = document.getElementById("waitTime");
   if (waitTime > maxMs) {
     if (waitElement) {
-      waitElement.textContent = "Login failed";
+      waitElement.textContent = "Sign-in failed - timed out";
+      document.getElementById("description").style.display = "none";
+      document.getElementById("qrCode").style.display = "none";
     }
   } else {
     const remainingTime = maxMs - waitTime;
