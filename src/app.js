@@ -13,7 +13,7 @@ const configuration = require("./support/configuration");
 const routes = require("./routes/express");
 
 const {
-  PORT = 3000,
+  PORT = 3005,
   ISSUER = process.env.FINDY_OIDC_OUR_HOST || `http://localhost:${PORT}`,
 } = process.env;
 configuration.findAccount = Account.findAccount;
