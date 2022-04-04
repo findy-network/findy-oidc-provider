@@ -34,7 +34,6 @@
 </form>
 <div class="login-help">- or -</div>
 <% } %>
-<div id="waitTime"></div>
 <form
   id="invitation"
   autocomplete="off"
@@ -45,10 +44,11 @@
   <input required type="password" name="password" placeholder="and password" <% if (params.login_hint) { %>autofocus="on"<% } %>>-->
 
   <% if (locals.invitationEncoded) { %>
-  <img src="<%= invitation %>" style="max-width: 100%" />
+  <img id="qrCode" src="<%= invitation %>" style="max-width: 100%" />
   <input type="hidden" name="login" value="<%= uid %>" />
   <% } %>
   <button style="display: none" type="submit" class="login login-submit">
     Sign-in
   </button>
 </form>
+<div class="qr-text" id="waitTime"></div>

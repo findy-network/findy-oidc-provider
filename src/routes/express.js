@@ -75,9 +75,9 @@ module.exports = (app, provider) => {
 
       switch (prompt.name) {
         case "login": {
-          const invitation = await (
-            await agent(Account)
-          ).createPairwiseInvitation(uid);
+          const ourAgent = await await agent(Account);
+          const invitation = await ourAgent.createPairwiseInvitation(uid);
+          const { credDefId, attributes } = ourAgent;
           params.invitationRaw = invitation.content;
           return res.render("login", {
             client,
@@ -85,6 +85,9 @@ module.exports = (app, provider) => {
             details: prompt.details,
             params,
             title: "Sign-in",
+            description: `Sign-in requires verification for <pre>${attributes.join(
+              ", "
+            )}</pre>with credential of type <pre>${credDefId}</pre> Read QR code below with your SSI wallet to start the verification:`,
             invitation: invitation.code,
             invitationId: invitation.id,
             invitationRaw: invitation.content,

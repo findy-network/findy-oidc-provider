@@ -229,6 +229,8 @@ module.exports = async (Account) => {
     return data;
   };
   return {
+    credDefId,
+    attributes,
     createPairwiseInvitation,
   };
 };

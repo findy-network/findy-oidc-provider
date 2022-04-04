@@ -189,6 +189,13 @@
       button {
         cursor: pointer;
       }
+      .qr-text {
+        text-align: center;
+      }
+      #waitTime {
+        font-size: 0.8em;
+        margin: 1em 0;
+      }
     </style>
     <% if (locals.invitationEncoded) { %>
     <script src="/js/status.js"></script>
@@ -197,6 +204,7 @@
   <body>
     <div class="login-card">
       <h1><%= title %></h1>
+      <p id="description"><%- description %></p>
       <%- body %>
       <div class="login-help">
         <a href="/interaction/<%= uid %>/abort">[ Cancel ]</a>
