@@ -14,21 +14,23 @@ module.exports = async (Account) => {
 
   // Create authenticator
   const acatorProps = {
-    authUrl: process.env.FINDY_OIDC_AGENCY_AUTH_URL,
-    authOrigin: process.env.FINDY_OIDC_AGENCY_AUTH_ORIGIN,
+    authUrl: process.env.FINDY_OIDC_AGENCY_AUTH_URL || "http://localhost:8088",
+    authOrigin:
+      process.env.FINDY_OIDC_AGENCY_AUTH_ORIGIN || "http://localhost:3000",
     userName: process.env.FINDY_OIDC_AGENCY_AUTH_USER,
     key: process.env.FINDY_OIDC_AGENCY_AUTH_KEY,
   };
   console.log("Creating acator with auth URL", acatorProps.authUrl);
   const authenticator = createAcator(acatorProps);
 
-  const agencyUrl = process.env.FINDY_OIDC_AGENCY_URL;
-  const agencyPort = 50051;
+  const agencyUrl = process.env.FINDY_OIDC_AGENCY_URL || "localhost";
+  const agencyPort = process.env.FINDY_OIDC_AGENCY_PORT || 50051;
+  const certPath = process.env.FINDY_OIDC_AGENCY_CERT_PATH || "";
 
   // Open grpc connection
   console.log(`Connecting to agency at ${agencyUrl}:${agencyPort}`);
   const connection = await openGRPCConnection(
-    { serverAddress: agencyUrl, serverPort: agencyPort, certPath: "" },
+    { serverAddress: agencyUrl, serverPort: agencyPort, certPath },
     authenticator
   );
 
@@ -197,7 +199,7 @@ module.exports = async (Account) => {
         ...result,
         [item.getName()]: item.getValue(),
       }),
-      { email: "n/a" }
+      {}
     );
     console.log("Creating new account", profile);
     new Account(uid, profile);

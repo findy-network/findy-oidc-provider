@@ -204,8 +204,9 @@
   <body>
     <div class="login-card">
       <h1><%= title %></h1>
+      <% if (locals.description) { %>
       <p id="description"><%- description %></p>
-      <%- body %>
+      <% } %> <%- body %>
       <div class="login-help">
         <a href="/interaction/<%= uid %>/abort">[ Cancel ]</a>
         <% if (client.tosUri) { %>

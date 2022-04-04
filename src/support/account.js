@@ -28,6 +28,7 @@ class Account {
         given_name: this.profile.given_name,
         locale: this.profile.locale,
         name: this.profile.name,
+        birthdate: this.profile.birthdate,
       };
     }
 
