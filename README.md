@@ -2,6 +2,22 @@
 
 [![test](https://github.com/findy-network/findy-oidc-provider/actions/workflows/test.yml/badge.svg)](https://github.com/findy-network/findy-oidc-provider/actions/workflows/test.yml)
 
+## Getting Started
+
+Findy Agency is a collection of services ([Core](https://github.com/findy-network/findy-agent),
+[Auth](https://github.com/findy-network/findy-agent-auth),
+[Vault](https://github.com/findy-network/findy-agent-vault) and
+[Web Wallet](https://github.com/findy-network/findy-wallet-pwa)) that provide
+full SSI agency along with a web wallet for individuals.
+To start experimenting with Findy Agency we recommend you to start with
+[the documentation](https://findy-network.github.io/) and
+[set up the agency to your localhost environment](https://github.com/findy-network/findy-wallet-pwa/tree/dev/tools/env#agency-setup-for-local-development).
+
+- [Documentation](https://findy-network.github.io/)
+- [Instructions for starting agency in Docker containers](https://github.com/findy-network/findy-wallet-pwa/tree/dev/tools/env#agency-setup-for-local-development)
+
+## Project
+
 Sample PoC project for integrating Aries-agent based authentication to OIDC identity provider. The OIDC provider implementation is [node-oidc-provider](https://github.com/panva/node-oidc-provider) sample code that has been extended with [Findy Agency](https://findy-network.github.io) SSI agent capabilities.
 
 ## Overview
