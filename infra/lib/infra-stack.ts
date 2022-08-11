@@ -5,6 +5,7 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import * as route53Targets from "aws-cdk-lib/aws-route53-targets";
 import * as apigw from "aws-cdk-lib/aws-apigateway";
 import { Construct } from "constructs";
+import { RetentionDays } from "aws-cdk-lib/aws-logs";
 
 export interface InfraProps extends StackProps {
   readonly subDomain: string;
@@ -37,6 +38,7 @@ export class InfraStack extends Stack {
         FINDY_OIDC_OUR_HOST: `https://${props.subDomain}.${props.rootDomain}`,
       },
       timeout: Duration.minutes(3),
+      logRetention: RetentionDays.ONE_MONTH,
     });
 
     const zone = route53.HostedZone.fromLookup(this, "FindyOIDCProviderZone", {

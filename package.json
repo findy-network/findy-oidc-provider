@@ -19,13 +19,13 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@findy-network/findy-common-ts": "^0.1.11",
-    "@vendia/serverless-express": "^4.5.3",
-    "express": "^4.17.2",
-    "helmet": "^5.0.2",
+    "@findy-network/findy-common-ts": "^0.1.12",
+    "@vendia/serverless-express": "^4.10.1",
+    "express": "^4.18.1",
+    "helmet": "^5.1.1",
     "lodash": "^4.17.21",
-    "oidc-provider": "^7.10.6",
-    "qrcode": "^1.5.0"
+    "oidc-provider": "^7.11.5",
+    "qrcode": "^1.5.1"
   },
   "devDependencies": {
     "js-green-licenses": "^3.0.1"
