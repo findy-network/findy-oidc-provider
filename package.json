@@ -10,7 +10,7 @@
     "package:zip": "zip -r lambda.zip node_modules src",
     "package:osx": "npm run package:install && npm run package:zip",
     "package:alpine": "npm run package:install && apk add zip && npm run package:zip",
-    "package:docker": "docker run -it --rm -v $PWD/.:/app -w /app node:16.13.2-alpine3.15 npm run package:alpine",
+    "package:docker": "docker run -it --rm --platform linux/amd64 -v $PWD/.:/app -w /app node:16.13.2-alpine3.15 npm run package:alpine",
     "licenses:report": "node ./tools/check-licenses.js report ./dist/licenses.txt",
     "licenses:check": "node ./tools/check-licenses.js",
     "start": "npm run check:clients && node src/index.js",
