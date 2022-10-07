@@ -84,14 +84,6 @@ sequenceDiagram
 
 1. Make sure you have Findy Agency running [locally](https://github.com/findy-network/findy-wallet-pwa/tree/dev/tools/env#agency-setup-for-local-development) or in the cloud.
 
-1. [Setup GitHub package registry authentication](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token).
-
-   Run
-
-   ```bash
-   echo "@findy-network:registry=https://npm.pkg.github.com" >> .npmrc
-   ```
-
 1. Setup node and deps
 
    ```bash
