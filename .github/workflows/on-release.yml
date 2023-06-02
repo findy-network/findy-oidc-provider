@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo "version=$(./tools/version.sh ./)" >> $GITHUB_ENV
+      - run: echo "version=$(cat ./VERSION)" >> $GITHUB_ENV
 
       - uses: docker/build-push-action@v3
         with:
