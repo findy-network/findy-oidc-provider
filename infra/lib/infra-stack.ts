@@ -1,73 +1,73 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
-import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as certManager from "aws-cdk-lib/aws-certificatemanager";
-import * as route53 from "aws-cdk-lib/aws-route53";
-import * as route53Targets from "aws-cdk-lib/aws-route53-targets";
-import * as apigw from "aws-cdk-lib/aws-apigateway";
-import { Construct } from "constructs";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
-
-export interface InfraProps extends StackProps {
-  readonly subDomain: string;
-  readonly rootDomain: string;
-
-  readonly agencyAuthUrl: string;
-  readonly agencyAuthOrigin: string;
-  readonly agencyAuthUser: string;
-  readonly agencyAuthKey: string;
-
-  readonly agencyUrl: string;
-  readonly credDefId: string;
-}
+import * as lightsail from 'aws-cdk-lib/aws-lightsail'
+import { Stack, StackProps } from 'aws-cdk-lib'
+import { Construct } from 'constructs'
 
 export class InfraStack extends Stack {
-  constructor(scope: Construct, id: string, props: InfraProps) {
-    super(scope, id, props);
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props)
 
-    const app = new lambda.Function(this, "FindyOIDCProviderHandler", {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset("../lambda.zip"),
-      handler: "src/lambda.handler",
-      environment: {
-        FINDY_OIDC_AGENCY_AUTH_URL: props.agencyAuthUrl,
-        FINDY_OIDC_AGENCY_AUTH_ORIGIN: props.agencyAuthOrigin,
-        FINDY_OIDC_AGENCY_AUTH_USER: props.agencyAuthUser,
-        FINDY_OIDC_AGENCY_AUTH_KEY: props.agencyAuthKey,
-        FINDY_OIDC_AGENCY_URL: props.agencyUrl,
-        FINDY_OIDC_CRED_DEF_ID: props.credDefId,
-        FINDY_OIDC_OUR_HOST: `https://${props.subDomain}.${props.rootDomain}`,
+    const cert = new lightsail.CfnCertificate(this, 'FindyOIDCProviderCertificate', {
+      certificateName: 'findy-oidc-provider',
+      domainName: `${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
+    })
+
+    new lightsail.CfnContainer(this, 'FindyOIDCProviderBackend', {
+      scale: 1,
+      power: 'nano',
+      serviceName: 'findy-oidc-provider',
+      publicDomainNames: [
+        {
+          domainNames: [`${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`],
+          certificateName: cert.certificateName
+        }
+      ],
+      containerServiceDeployment: {
+        containers: [
+          {
+            containerName: 'findy-oidc-provider',
+            image: `ghcr.io/findy-network/findy-oidc-provider:latest`,
+            ports: [{ port: '3005', protocol: 'HTTP' }],
+            environment: [
+              {
+                variable: 'FINDY_OIDC_AGENCY_AUTH_URL',
+                value: process.env.FINDY_OIDC_AGENCY_AUTH_URL,
+              },
+              {
+                variable: 'FINDY_OIDC_AGENCY_AUTH_ORIGIN',
+                value: process.env.FINDY_OIDC_AGENCY_AUTH_ORIGIN,
+              },
+              {
+                variable: 'FINDY_OIDC_AGENCY_AUTH_USER',
+                value: process.env.FINDY_OIDC_AGENCY_AUTH_USER,
+              },
+              {
+                variable: 'FINDY_OIDC_AGENCY_AUTH_KEY',
+                value: process.env.FINDY_OIDC_AGENCY_AUTH_KEY,
+              },
+              {
+                variable: 'FINDY_OIDC_AGENCY_URL',
+                value: process.env.FINDY_OIDC_AGENCY_URL,
+              },
+              {
+                variable: 'FINDY_OIDC_CRED_DEF_ID',
+                value: process.env.FINDY_OIDC_CRED_DEF_ID,
+              },
+              {
+                variable: 'FINDY_OIDC_CLIENTS_JSON',
+                value: process.env.FINDY_OIDC_CLIENTS_JSON,
+              },
+              {
+                variable: 'FINDY_OIDC_OUR_HOST',
+                value: `https://${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
+              },
+            ],
+          },
+        ],
+        publicEndpoint: {
+          containerName: 'findy-oidc-provider',
+          containerPort: 3005,
+        },
       },
-      timeout: Duration.minutes(3),
-      logRetention: RetentionDays.ONE_MONTH,
-    });
-
-    const zone = route53.HostedZone.fromLookup(this, "FindyOIDCProviderZone", {
-      domainName: props.rootDomain,
-    });
-    const domainName = `${props.subDomain}.${props.rootDomain}`;
-    const certificate = new certManager.DnsValidatedCertificate(
-      this,
-      `FindyOIDCProviderCertificate`,
-      {
-        domainName,
-        hostedZone: zone,
-      }
-    );
-
-    const restApi = new apigw.LambdaRestApi(this, "FindyOIDCProviderEndpoint", {
-      handler: app,
-      domainName: {
-        domainName,
-        certificate,
-      },
-    });
-
-    new route53.ARecord(this, "FindyOIDCProviderEndpointApiDNS", {
-      zone: zone,
-      recordName: props.subDomain,
-      target: route53.RecordTarget.fromAlias(
-        new route53Targets.ApiGateway(restApi)
-      ),
-    });
+    })
   }
 }
