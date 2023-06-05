@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "pipeline:context": "JSON=$(cat cdk.context.json) && aws ssm put-parameter --overwrite --name \"/findy-oidc-provider/cdk-context\" --value \"$JSON\" --type String"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
