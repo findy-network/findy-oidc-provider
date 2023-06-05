@@ -7,14 +7,14 @@ export class InfraStack extends Stack {
     super(scope, id, props)
 
     const cert = new lightsail.CfnCertificate(this, 'FindyOIDCProviderCertificate', {
-      certificateName: 'findy-oidc-provider',
+      certificateName: 'findy-oidc-provider-cert',
       domainName: `${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
     })
 
     new lightsail.CfnContainer(this, 'FindyOIDCProviderBackend', {
       scale: 1,
       power: 'nano',
-      serviceName: 'findy-oidc-provider',
+      serviceName: 'findy-oidc-provider-svc',
       publicDomainNames: [
         {
           domainNames: [`${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`],
@@ -24,7 +24,7 @@ export class InfraStack extends Stack {
       containerServiceDeployment: {
         containers: [
           {
-            containerName: 'findy-oidc-provider',
+            containerName: 'findy-oidc-provider-container',
             image: `ghcr.io/findy-network/findy-oidc-provider:latest`,
             ports: [{ port: '3005', protocol: 'HTTP' }],
             environment: [
@@ -64,7 +64,7 @@ export class InfraStack extends Stack {
           },
         ],
         publicEndpoint: {
-          containerName: 'findy-oidc-provider',
+          containerName: 'findy-oidc-provider-container',
           containerPort: 3005,
         },
       },
