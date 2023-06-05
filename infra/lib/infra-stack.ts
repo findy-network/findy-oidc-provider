@@ -6,21 +6,21 @@ export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    const cert = new lightsail.CfnCertificate(this, 'FindyOIDCProviderCertificate', {
-      certificateName: 'findy-oidc-provider-cert',
-      domainName: `${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
-    })
+    // const cert = new lightsail.CfnCertificate(this, 'FindyOIDCProviderCertificate', {
+    //   certificateName: 'findy-oidc-provider-cert',
+    //   domainName: `${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
+    // })
 
     new lightsail.CfnContainer(this, 'FindyOIDCProviderBackend', {
       scale: 1,
       power: 'nano',
       serviceName: 'findy-oidc-provider-svc',
-      publicDomainNames: [
-        {
-          domainNames: [`${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`],
-          certificateName: cert.certificateName
-        }
-      ],
+      // publicDomainNames: [
+      //   {
+      //     domainNames: [`${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`],
+      //     certificateName: cert.certificateName
+      //   }
+      // ],
       containerServiceDeployment: {
         containers: [
           {
