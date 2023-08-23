@@ -7,15 +7,16 @@ if [ -z "$GITHUB_CONNECTION_ARN" ]; then
   exit 1
 fi
 
-if [ -z "$DOMAIN_NAME" ]; then
-  echo "ERROR: Define env variable DOMAIN_NAME"
-  exit 1
-fi
+# TODO: (now hardcoded as FINDY_OIDC_OUR_HOST)
+# if [ -z "$DOMAIN_NAME" ]; then
+#   echo "ERROR: Define env variable DOMAIN_NAME"
+#   exit 1
+# fi
 
-if [ -z "$SUB_DOMAIN_NAME" ]; then
-  echo "ERROR: Define env variable SUB_DOMAIN_NAME"
-  exit 1
-fi
+# if [ -z "$SUB_DOMAIN_NAME" ]; then
+#   echo "ERROR: Define env variable SUB_DOMAIN_NAME"
+#   exit 1
+# fi
 
 if [ -z "$FINDY_OIDC_AGENCY_AUTH_USER" ]; then
   echo "ERROR: Define env variable FINDY_OIDC_AGENCY_AUTH_USER"

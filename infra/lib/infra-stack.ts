@@ -58,7 +58,7 @@ export class InfraStack extends Stack {
               },
               {
                 variable: 'FINDY_OIDC_OUR_HOST',
-                value: `https://${process.env.SUB_DOMAIN_NAME}.${process.env.DOMAIN_NAME}`,
+                value: `https://${process.env.FINDY_OIDC_OUR_HOST}`,
               },
             ],
           },

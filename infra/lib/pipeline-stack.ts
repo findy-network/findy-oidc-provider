@@ -12,13 +12,18 @@ import { Topic } from 'aws-cdk-lib/aws-sns'
 interface InfraPipelineProperties extends cdk.StackProps { }
 
 const environmentVariables: Record<string, codebuild.BuildEnvironmentVariable> = {
-  DOMAIN_NAME: {
+  // TODO:
+  // DOMAIN_NAME: {
+  //   type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+  //   value: '/findy-oidc-provider/domain-name',
+  // },
+  // SUB_DOMAIN_NAME: {
+  //   type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+  //   value: '/findy-oidc-provider/sub-domain-name',
+  // },
+  FINDY_OIDC_OUR_HOST: {
     type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-    value: '/findy-oidc-provider/domain-name',
-  },
-  SUB_DOMAIN_NAME: {
-    type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-    value: '/findy-oidc-provider/sub-domain-name',
+    value: '/findy-oidc-provider/findy-oidc-our-host',
   },
   // TODO: use secrets
   FINDY_OIDC_AGENCY_AUTH_USER: {

@@ -30,9 +30,9 @@ Note! "<>" indicates example value, and shouldn't be included in the values you 
    # github connection arn
    export GITHUB_CONNECTION_ARN=<arn:aws:codestar-connections:us-east-1:xxx:connection/xxx>
    # app root domain
-   export DOMAIN_NAME=<example.com>
+   #export DOMAIN_NAME=<example.com>
    # app sub domain part
-   export SUB_DOMAIN_NAME=<oidc-provider>
+   #export SUB_DOMAIN_NAME=<oidc-provider>
    # agent name
    export FINDY_OIDC_AGENCY_AUTH_USER=<agent-name>
    # agent key
