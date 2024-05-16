@@ -2,6 +2,11 @@
 
 [![test](https://github.com/findy-network/findy-oidc-provider/actions/workflows/test.yml/badge.svg)](https://github.com/findy-network/findy-oidc-provider/actions/workflows/test.yml)
 
+> Findy Agency is an open-source project for a decentralized identity agency.
+> OP Lab developed it from 2019 to 2024. The project is no longer maintained,
+> but the work will continue with new goals and a new mission.
+> Follow [the blog](https://findy-network.github.io/blog/) for updates.
+
 Sample PoC project for integrating Aries-agent based authentication to OIDC identity provider. The OIDC provider implementation is [node-oidc-provider](https://github.com/panva/node-oidc-provider) sample code that has been extended with [Findy Agency](https://findy-network.github.io) SSI agent capabilities.
 
 ## Overview
